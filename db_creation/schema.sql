@@ -16,6 +16,7 @@ CREATE TABLE pools (
     FOREIGN KEY (owner_id) REFERENCES users (id)
 );
 
+
 CREATE TABLE squares (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     pool_id INTEGER NOT NULL,
