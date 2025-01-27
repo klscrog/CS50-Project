@@ -3,7 +3,7 @@ from flask_session import Session
 import sqlite3
 from authorization_helper import auth_bp, login_required
 from database_helper import get_db, get_pool, get_pools, claim_square, delete_pool, user_pools
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Ensure you have a secret key for session management
@@ -20,7 +20,7 @@ def index():
             flash("You have not created any pools yet.")
         return render_template('index.html', user_pool_list=user_pool_list)
     else:
-        return render_template('new_session.html')
+        return redirect(url_for('new_session'))
 
 @app.route('/new_session')
 def new_session():
@@ -50,49 +50,6 @@ def logout():
     session.clear()
     return redirect(url_for('index'))
 
-@app.route("/auth/register", methods=["GET", "POST"])
-def register():
-    """Register user"""
-    if request.method == "GET":
-        return render_template("register.html")
-    else:
-        username = request.form.get("username")
-        email = request.form.get("email")
-        password = request.form.get("password")
-        confirmation = request.form.get("confirmation")
-
-        if not username:
-            flash("Please enter username")
-            return redirect(url_for('register'))
-        if not email:
-            flash("Please enter email")
-            return redirect(url_for('register'))
-        if not password:
-            flash("Please enter password")
-            return redirect(url_for('register'))
-        if not confirmation:
-            flash("Please confirm password")
-            return redirect(url_for('register'))
-        if password != confirmation:
-            flash("Password must match confirmation")
-            return redirect(url_for('register'))
-
-        hash = generate_password_hash(password)
-
-        db = get_db()
-        try:
-            db.execute(
-                "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)",
-                (username, email, hash)
-            )
-            db.commit()
-            new_user = db.execute("SELECT id FROM users WHERE username = ?", (username,)).fetchone()
-            session["user_id"] = new_user["id"]
-        except sqlite3.IntegrityError:
-            flash("Username or email already taken")
-            return redirect(url_for('register'))
-
-        return redirect(url_for('index'))
 
 # get specific pool
 @app.route('/pool/<int:pool_id>')
@@ -113,7 +70,7 @@ def claim_square_route(pool_id, x, y):
     if user_id:
         claim_square(pool_id, x, y, user_id)
         return redirect(url_for('view_pool', pool_id=pool_id))
-    return redirect(url_for('login'))
+    return redirect(url_for('auth.login'))
 
 # delete pool
 @app.route('/delete_pool/<int:pool_id>', methods=['POST'])
