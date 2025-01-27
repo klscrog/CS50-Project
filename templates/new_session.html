@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block title %}
+   Super Bowl Pool Maker
+{% endblock %}
+
+{% block main %}
+    <div class="text-center mt-5">
+        <h1>Welcome to the Super Bowl Pool Maker!</h1>
+        <p class="mt-3">
+            Create, manage, and participate in your own Super Bowl pools. 
+            This tool makes it easy to set up a pool, claim squares, and keep track of participants.
+        </p>
+        <p>Sign up or log in to get started!</p>
+        <div class="d-flex justify-content-center mt-4">
+            <a class="btn btn-primary mx-2" href="/auth/login">Log In</a>
+            <a class="btn btn-success mx-2" href="/auth/register">Register</a>
+        </div>
+    </div>
+{% endblock %}

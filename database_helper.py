@@ -26,6 +26,7 @@ def close_connection():
     if db is not None:
         db.close()
 
+# Other database helper functions...
 
 # get specific pool
 def get_pool(pool_id):

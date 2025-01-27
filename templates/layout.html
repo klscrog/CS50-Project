@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -28,18 +26,18 @@
                     {% if session.get('user_id') %}
                         <!-- User is logged in -->
                         <li class="nav-item">
-                            <a class="nav-link" href="/pools">My Pools</a>
+                            <a class="nav-link" href="{{ url_for('list_pools') }}">My Pools</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/logout">Logout</a>
+                            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
                         </li>
                     {% else %}
                         <!-- User is not logged in -->
                         <li class="nav-item">
-                            <a class="nav-link" href="/auth/login">Login</a>
+                            <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/auth/register">Register</a>
+                            <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -49,15 +47,20 @@
 
     <!-- Main Content -->
     <main class="container mt-4">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-warning" role="alert">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
         {% block main %}
         
         {% endblock %}
     </main>
-
-    <!-- Footer -->
-    <footer class="bg-light text-center py-3 mt-4">
-        <p class="mb-0">© 2025 Superbowl Pool Maker. All Rights Reserved. Made by Kevin for CS50 Final Project</p>
-    </footer>
 </body>
-
 </html>
