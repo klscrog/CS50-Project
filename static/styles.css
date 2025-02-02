@@ -1,0 +1,115 @@
+/* General styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 20px 0;
+}
+
+p {
+    margin: 10px 0;
+}
+
+/* Table styles */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.table th, .table td {
+    border: 2px solid #000;
+    padding: 20px;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.table th {
+    background-color: #000;
+    color: #fff;
+}
+
+.table td {
+    background-color: #fff;
+    color: #000;
+}
+
+/* Button styles */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    background-color: #000;
+    border: 2px solid #000;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.btn:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+/* Custom button styles */
+.btn-view {
+    background-color: #007bff; /* Blue */
+    border-color: #007bff;
+}
+
+.btn-view:hover {
+    background-color: #0056b3;
+    color: #fff;
+}
+
+.btn-delete {
+    background-color: #dc3545; /* Red */
+    border-color: #dc3545;
+}
+
+.btn-delete:hover {
+    background-color: #c82333;
+    color: #fff;
+}
+
+/* Popup styles */
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border: 2px solid #000;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+/* Image styles */
+.resized-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+/* Form styles */
+form {
+    margin: 20px 0;
+}
+
+/* Note styles */
+#claimNote {
+    font-weight: bold;
+    color: #ff0000;
+}

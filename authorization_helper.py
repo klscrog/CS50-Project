@@ -29,7 +29,8 @@ def register():
             flash("Password must match confirmation")
             return redirect(url_for('auth.register'))
 
-        password_hash = generate_password_hash(password)  # Hash the password
+        # Hash the password
+        password_hash = generate_password_hash(password)  
 
         try:
             create_user(username, email, password_hash)

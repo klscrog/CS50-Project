@@ -20,11 +20,19 @@
           <tr>
             <td>{{ row["name"] }}</td>
             <td>{{ row["created_at"] }}</td>
-            <td>{{ row["grid_size"] }}</td>
             <td>
-                <a href="{{ url_for('view_pool', pool_id=row['id']) }}" class="btn btn-primary btn-sm">View</a>
+              {% if row["grid_size"] == 6 %}
+                  5x5
+                {% elif row["grid_size"] == 11 %}
+                  10x10
+                {% else %}
+                  {{ row["grid_size"] }}
+              {% endif %}
+            </td>
+            <td>
+                <a href="{{ url_for('view_pool', pool_id=row['id']) }}" class="btn btn-view btn-sm">View</a>
                 <form action="{{ url_for('delete_pool_route', pool_id=row['id']) }}" method="post" style="display:inline;">
-                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    <button type="submit" class="btn btn-delete btn-sm">Delete</button>
                 </form>
             </td>
           </tr>
