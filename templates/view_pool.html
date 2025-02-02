@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    View Pool
+{% endblock %}
+
+{% block main %}
+    <h1>{{ pool.name }}</h1>
+    <p>Grid Size: {{ pool.grid_size }} x {{ pool.grid_size }}</p>
+    <table class="table table-bordered">
+        <tbody>
+            {% for x in range(pool.grid_size) %}
+            <tr>
+                {% for y in range(pool.grid_size) %}
+                <td>
+                    {% if pool.squares[x][y] %}
+                        {{ pool.squares[x][y] }}
+                    {% else %}
+                        <button class="btn btn-sm btn-primary" onclick="claimSquare({{ pool.id }}, {{ x }}, {{ y }})">Claim</button>
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button id="generateNumbersBtn" class="btn btn-secondary" disabled>Generate Numbers</button>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function claimSquare(poolId, x, y) {
+        console.log(`Claiming square at (${x}, ${y}) in pool ${poolId}`);
+        const name = prompt("Please enter your name:");
+        if (name) {
+            console.log(`Name entered: ${name}`);
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/claim_square/${poolId}/${x}/${y}`;
+            
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'name';
+            input.value = name;
+            form.appendChild(input);
+            
+            document.body.appendChild(form);
+            form.submit();
+        } else {
+            console.log('No name entered');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const squares = {{ pool.squares | tojson }};
+        const gridSize = {{ pool.grid_size }};
+        let allFilled = true;
+
+        for (let x = 0; x < gridSize; x++) {
+            for (let y = 0; y < gridSize; y++) {
+                if (!squares[x][y]) {
+                    allFilled = false;
+                    break;
+                }
+            }
+            if (!allFilled) break;
+        }
+
+        if (allFilled) {
+            document.getElementById('generateNumbersBtn').disabled = false;
+        }
+    });
+</script>
+{% endblock %}
+

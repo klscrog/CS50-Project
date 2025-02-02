@@ -2,11 +2,11 @@ from flask import Flask, flash, redirect, render_template, request, session, jso
 from flask_session import Session
 import sqlite3
 from authorization_helper import auth_bp, login_required
-from database_helper import get_db, get_pool, get_pools, claim_square, delete_pool, user_pools
+from database_helper import get_db, get_pool, get_pools, delete_pool, user_pools, get_squares, claim_square
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Ensure you have a secret key for session management
+app.secret_key = '123'  
 
 # Register the auth blueprint
 app.register_blueprint(auth_bp, url_prefix='/auth')
@@ -26,23 +26,25 @@ def index():
 def new_session():
     return render_template('new_session.html')
 
-# log in
-@app.route('/auth/login', methods=['GET', 'POST'])
-def login():
+@app.route('/create_pool', methods=['GET', 'POST'])
+def create_pool():
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+        name = request.form['name']
+        grid_size = request.form['grid_size']
+        user_id = session.get('user_id')
+
+        if not user_id:
+            return redirect(url_for('auth.login'))
 
         db = get_db()
-        user = db.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
+        db.execute(
+            "INSERT INTO pools (name, grid_size, owner_id) VALUES (?, ?, ?)",
+            (name, grid_size, user_id)
+        )
+        db.commit()
+        return redirect(url_for('index'))
 
-        if user and check_password_hash(user['password_hash'], password):
-            session['user_id'] = user['id']
-            session['username'] = user['username']
-            return redirect(url_for('index'))
-        else:
-            return render_template('login.html', error="Invalid credentials")
-    return render_template('login.html')
+    return render_template('create_pool.html')
 
 # log out
 @app.route('/logout')
@@ -50,25 +52,23 @@ def logout():
     session.clear()
     return redirect(url_for('index'))
 
-
-# get specific pool
 @app.route('/pool/<int:pool_id>')
 def view_pool(pool_id):
     pool = get_pool(pool_id)
-    return render_template('pool.html', pool=pool)
+    if pool is None:
+        flash("Pool not found.")
+        return redirect(url_for('index'))
+    
+    pool = dict(pool)  # Convert sqlite3.Row to dictionary
+    pool['squares'] = get_squares(pool_id)  # Add squares to the pool data
+    return render_template('view_pool.html', pool=pool)
 
-# get all pools
-@app.route('/pools')
-def list_pools():
-    pools = get_pools()
-    return render_template('pools.html', pools=pools)
-
-# claim square
 @app.route('/claim_square/<int:pool_id>/<int:x>/<int:y>', methods=['POST'])
 def claim_square_route(pool_id, x, y):
     user_id = session.get('user_id')  # Replace with the logged-in user's ID
     if user_id:
-        claim_square(pool_id, x, y, user_id)
+        name = request.form['name']
+        claim_square(pool_id, x, y, name)
         return redirect(url_for('view_pool', pool_id=pool_id))
     return redirect(url_for('auth.login'))
 

@@ -26,7 +26,7 @@
                     {% if session.get('user_id') %}
                         <!-- User is logged in -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('list_pools') }}">My Pools</a>
+                            <a class="nav-link" href="{{ url_for('index') }}">My Pools</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>

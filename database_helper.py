@@ -36,19 +36,44 @@ def get_pool(pool_id):
 # get all pools
 def get_pools():
     db = get_db()
-    return db.execute("SELECT * FROM pools").fetchall()
+    try:
+        pools = db.execute("SELECT * FROM pools").fetchall()
+        return pools
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        return []
+    except Exception as e:
+        print(f"General error: {e}")
+        return []
 
-#show user pools
+# show user pools
 def user_pools(user_id):
     db = get_db()
-    return db.execute("SELECT * FROM pools WHERE owner_id = ?", user_id)
+    try:
+        pools = db.execute("SELECT * FROM pools WHERE owner_id = ?", (user_id,)).fetchall()
+        return pools
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        return []
+    except Exception as e:
+        print(f"General error: {e}")
+        return []
 
-#claim square
-def claim_square(pool_id, x, y, user_id):
+def get_squares(pool_id):
+    db = get_db()
+    squares = db.execute("SELECT x, y, user_id FROM squares WHERE pool_id = ?", (pool_id,)).fetchall()
+    grid_size = db.execute("SELECT grid_size FROM pools WHERE id = ?", (pool_id,)).fetchone()['grid_size']
+    grid = [[None for _ in range(grid_size)] for _ in range(grid_size)]
+    for square in squares:
+        grid[square['x']][square['y']] = square['user_id']
+    return grid
+
+
+def claim_square(pool_id, x, y, name):
     db = get_db()
     db.execute(
         "UPDATE squares SET user_id = ? WHERE pool_id = ? AND x = ? AND y = ?",
-        (user_id, pool_id, x, y)
+        (name, pool_id, x, y)
     )
     db.commit()
 
@@ -56,4 +81,4 @@ def claim_square(pool_id, x, y, user_id):
 def delete_pool(pool_id):
     db = get_db()
     db.execute("DELETE FROM pools WHERE id = ?", (pool_id,))
-    db.commit()
+    db.commit()    
