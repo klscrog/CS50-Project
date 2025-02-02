@@ -69,6 +69,7 @@ def get_squares(pool_id):
     return grid
 
 
+
 def claim_square(pool_id, x, y, name):
     db = get_db()
     db.execute(
