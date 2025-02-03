@@ -1,6 +1,6 @@
 # Superbowl Pool Maker
 ## Create, manage, and participate in your own Super Bowl pools.
-### Video Demo: 
+### Video Demo: https://www.youtube.com/watch?v=W1B8qzHxRs8
 ### Description:
 The goal of this project is to create a website that allows users to make and manage Superbowl pools. The website registers new users, then tracks the pools that the user makes. The user can then view the pools, assign names to the squares, and generate random numbers for the scores.
 In order to make this program work, I used the Finance problem from week 9 for my guide to a lot of the formatting. I used python with flask for the backend, html with javascript, CSS and Bootstrap for the frontend, and SQLite for the database management.
