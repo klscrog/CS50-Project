@@ -81,6 +81,16 @@ def create_pool():
 
     return render_template('create_pool.html')
 
+@app.route('/pool/<int:pool_id>')
+def view_pool(pool_id):
+    pool = get_pool(pool_id)
+    if pool is None:
+        flash("Pool not found.")
+        return redirect(url_for('index'))
+    
+    pool['squares'] = get_squares(pool_id)  # Add squares to the pool data
+    return render_template('view_pool.html', pool=pool)
+
 @app.route('/generate_numbers/<int:pool_id>', methods=['POST'])
 def generate_numbers(pool_id):
     db = get_db()
@@ -117,16 +127,6 @@ def generate_numbers(pool_id):
 
     db.commit()
     return redirect(url_for('view_pool', pool_id=pool_id))
-
-@app.route('/pool/<int:pool_id>')
-def view_pool(pool_id):
-    pool = get_pool(pool_id)
-    if pool is None:
-        flash("Pool not found.")
-        return redirect(url_for('index'))
-    
-    pool['squares'] = get_squares(pool_id)  # Add squares to the pool data
-    return render_template('view_pool.html', pool=pool)
 
 @app.route('/claim_square/<int:pool_id>/<int:x>/<int:y>', methods=['POST'])
 def claim_square_route(pool_id, x, y):
